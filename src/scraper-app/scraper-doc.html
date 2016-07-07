@@ -1,0 +1,150 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="scraper-doc">
+   <template>
+        <style is="custom-style">
+        :host{
+            background: #e5e5e5;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-pack: center;
+                -ms-flex-pack: center;
+                    justify-content: center;
+            padding: 10px;
+            height: 100vh;    /* allow to grow as mush as I need*/
+        }
+        .documentation-wrapper{
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+                -ms-flex-direction: column;
+                    flex-direction: column;
+            -ms-flex-wrap: wrap;
+                flex-wrap: wrap;
+            -webkit-box-pack: center;
+                -ms-flex-pack: center;
+                    justify-content: center;;
+            -webkit-box-align: center;;
+                -ms-flex-align: center;;
+                    align-items: center;
+            background: white;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            height: 80%;
+            width: 80%;
+        }
+        .title{
+          -webkit-box-flex: 1;
+              -ms-flex: 1;
+                  flex: 1;
+        }
+        .content{
+          -webkit-box-flex:3;
+              -ms-flex:3;
+                  flex:3;
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -ms-flex-wrap: wrap;
+              flex-wrap: wrap;
+          padding:10px 50px;
+          width: calc(100% - 100px);
+        }
+        .content  .info-section{
+          -webkit-box-flex: 1;
+              -ms-flex: 1;
+                  flex: 1;
+        }
+        .content  .info-section .list{
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-orient: vertical;
+          -webkit-box-direction: normal;
+              -ms-flex-direction: column;
+                  flex-direction: column;
+          height: 70%;
+        }
+        .content  .info-section .list .item{
+          -webkit-box-flex:1;
+              -ms-flex:1;
+                  flex:1;
+        }
+        .content  .response-section{
+          -webkit-box-flex: 1;
+              -ms-flex: 1;
+                  flex: 1;
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-orient: vertical;
+          -webkit-box-direction: normal;
+              -ms-flex-direction: column;
+                  flex-direction: column;
+          -ms-flex-wrap: wrap;
+              flex-wrap: wrap;
+          height: 100%;
+        }
+        .content  .response-section .response{
+          display: -webkit-box;
+          display: -ms-flexbox;
+          display: flex;
+          -webkit-box-orient: vertical;
+          -webkit-box-direction: normal;
+              -ms-flex-direction: column;
+                  flex-direction: column;
+          height: 100%;
+        }
+        pre{
+          white-space: pre-wrap;
+          color: #32CD32;
+          background: black;
+          border-radius: 10px;
+        }
+        </style>
+        <div class="documentation-wrapper">
+            <div class="title">
+              <h1>Scraper simple API</h1>
+            </div>
+            <div class="content">
+              <div class="info-section">
+                <div class="list">
+                  <div class="item"><strong>Endpoint:</strong> http://scraperapi.esy.es/request.php</div>
+                  <div class="item"><strong>Method: </strong> POST</div>
+                </div>
+              </div>
+              <div class="response-section">
+                <div class="response">
+                  <strong>Body: </strong>
+                  <div class="pre-wrapper">
+                    <pre>
+                      {
+                        body:"http:www.someurl.com"
+                      }
+                    </pre>
+                  </div>
+                <div class="response">
+                  <strong>Response: </strong>
+                  <div class="pre-wrapper">
+                    <pre>
+                      {
+                        title:'some title',
+                        description:'some description',
+                        image:'www.someurl.com/images/image.jpg'
+                      }
+                    </pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'scraper-doc',
+
+        })
+    </script>
+</dom-module>

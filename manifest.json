@@ -1,0 +1,7 @@
+{
+  "name": "scraper",
+  "short_name": "scraper",
+  "description": "URL scraper app",
+  "start_url": "/",
+  "display": "standalone"
+}

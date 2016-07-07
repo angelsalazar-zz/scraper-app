@@ -1,0 +1,42 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="scraper-el.html">
+<link rel="import" href="scraper-doc.html">
+
+<dom-module id="scraper-app">
+   <link rel="import" type="css" href="scraper-style.css">
+   <template>
+        <style>
+            :host {
+                display: block;
+            }
+       </style>
+       <paper-toolbar class="tall">
+          <paper-tabs selected="{{currentPage}}" class="bottom self-end" style="width: 300px;">
+            <paper-tab>Scraper</paper-tab>
+            <paper-tab>Scraper API</paper-tab>
+          </paper-tabs>
+       </paper-toolbar>
+       <iron-pages selected="{{currentPage}}">
+           <scraper-el></scraper-el>
+           <scraper-doc></scraper-doc>
+       </iron-pages>
+    </template>
+    <script>
+        Polymer({
+            is: 'scraper-app',
+            properties:{
+                currentPage:{
+                    type: Number,
+                    value: 0,
+                    notify:true
+                }
+            }
+
+    });
+  </script>
+</dom-module>

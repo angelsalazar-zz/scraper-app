@@ -1,0 +1,13 @@
+paper-toolbar {
+    --paper-toolbar-background: var(--paper-blue-900);
+}
+
+.self-end {
+    /* This mixin (from iron-flex-layout) aligns the tabs to the
+       bottom of the toolbar. */
+    @apply(--layout-self-end);
+}
+
+paper-tabs {
+    --paper-tabs-selection-bar-color: #ED1C23;
+}

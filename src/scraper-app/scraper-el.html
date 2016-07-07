@@ -1,0 +1,246 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+<dom-module id="scraper-el">
+   <template>
+        <style is="custom-style">
+        :host{
+            background: #e5e5e5;
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+                -ms-flex-direction: column;
+                    flex-direction: column;
+            padding: 10px;
+            min-height: 100vh;    /* allow to grow as mush as I need*/
+        }
+       .input-wrapper {
+           background: white;
+           display: -webkit-box;
+           display: -ms-flexbox;
+           display: flex;
+           -webkit-box-orient: horizontal;
+           -webkit-box-direction: normal;
+               -ms-flex-direction: row;
+                   flex-direction: row;
+           height: 85px;
+           box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+       }
+       .input-wrapper .stretch-input{
+           -webkit-box-flex: 1;
+               -ms-flex: 1;
+                   flex: 1; /* each is one proportion compare to the rest*/
+           padding: 0 10px;
+       }
+       .input-wrapper .resized-btn{
+           display: -webkit-box;
+           display: -ms-flexbox;
+           display: flex;
+           -webkit-box-align: center;
+               -ms-flex-align: center;
+                   align-items: center;
+       }
+       .list {
+           display: -webkit-box;
+           display: -ms-flexbox;
+           display: flex;
+           -webkit-box-orient: horizontal;
+           -webkit-box-direction: normal;
+               -ms-flex-direction: row;
+                   flex-direction: row;
+           -ms-flex-wrap: wrap;
+               flex-wrap: wrap;
+           -webkit-box-align: center;
+               -ms-flex-align: center;
+                   align-items: center;
+           height: calc(100% - 85px);
+       }
+       .list .list-item{
+           display: -webkit-box;
+           display: -ms-flexbox;
+           display: flex;
+           width: calc(250px - 24px);
+           margin: 19px;
+       }
+       .list .list-item .scraper-card{
+           background: white;
+           box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+       }
+       .list .list-item .scraper-card:hover{
+           box-shadow: 0 0 6px rgba(35, 173, 278, 1);
+       }
+       .list .list-item .scraper-card-title, .scraper-card-content{
+           padding: 5px;
+       }
+       .list .list-item .scraper-card-action{
+           display: -webkit-box;
+           display: -ms-flexbox;
+           display: flex;
+           -webkit-box-orient: horizontal;
+           -webkit-box-direction: reverse;
+               -ms-flex-direction: row-reverse;
+                   flex-direction: row-reverse;
+       }
+       #thumbnail{
+           width: calc(250px - 24px);
+           height: 150px;
+           --iron-image-width: calc(250px - 24px);
+           --iron-image-height: 150px;
+       }
+       h1,h2,h3,h4{
+           margin: 0px;
+           padding: 0px;
+       }
+       paper-button.scraper-btn{
+           background: rgba(0,0,255,0.8);
+           color: white;
+       }
+       paper-button[disabled]{
+         background: rgba(0,0,255,0.5);
+       }
+       .overlay{
+           position: absolute;
+           top:0;
+           bottom: 0;
+           left: 0;
+           right: 0;
+           display: -webkit-box;
+           display: -ms-flexbox;
+           display: flex;
+           -webkit-box-orient: vertical;
+           -webkit-box-direction: normal;
+               -ms-flex-direction: column;
+                   flex-direction: column;
+           -webkit-box-align: center;
+               -ms-flex-align: center;
+                   align-items: center;
+           -webkit-box-pack: center;
+               -ms-flex-pack: center;
+                   justify-content: center;
+           background: #fff;
+       }
+       </style>
+            <iron-ajax id="ajax"
+                       method="POST"
+                       url="http://scraperapi.esy.es/request.php"
+                       handle-json="json"
+                       content-type="application/json"
+                       on-response="_handleResponse"
+                       on-error="_handleErrorResponse">
+            </iron-ajax>
+            <div class="input-wrapper">
+                <div class="stretch-input">
+                    <paper-input    id="input"
+                                value="{{url}}"
+                                label="Get me a link to scrap "
+                                required
+                                error-message="url only"></paper-input>
+                </div>
+                <div class="resized-btn">
+                    <paper-button on-tap="_scrapLink" raised disabled class="scraper-btn">Scrap</paper-button>
+                </div>
+            </div>
+            <br>
+            <div class="list">
+                <template is="dom-repeat" items="{{scrapers}}">
+                <div class="list-item">
+                    <div class="scraper-card">
+                        <iron-image id="thumbnail"
+                                alt="{{item.title}}"
+                                src="{{item.img_url}}"
+                                ></iron-image>
+                        <div class="scraper-card-title">
+                            <a href="{{item.url}}">{{item.title}}</a>
+                        </div>
+                        <div class="scraper-card-content">
+                            {{item.description}}
+                        </div>
+                        <div class="scraper-card-action">
+                            <paper-icon-button icon="delete" on-tap="_deleteScraperLink"></paper-icon-button>
+                        </div>
+                    </div>
+                </div>
+                </template>
+            </div>
+
+            <!-- loading -->
+            <div class="overlay" hidden$="[[!isLoading]]">
+                <paper-spinner active="[[isLoading]]"></paper-spinner>
+            </div>
+    </template>
+    <script>
+        Polymer({
+            is: 'scraper-el',
+            properties:{
+              isLoading:{
+                type:Boolean,
+                value:false
+              },
+                url:{
+                    type: String,
+                    value: '',
+                    observer: '_urlChanged'
+                },
+                scrapers:{
+                    type: Array,
+                    value: function(){
+                        return [
+
+                        ];
+                    },
+                    notify:true
+                }
+            },
+            _urlChanged:function(input){
+                this._valiteInputValue(input);
+            },
+            ready:function(){
+                console.log("ready");
+                //http://stackoverflow.com/questions/34627793/polymer-1-x-deleting-an-item-from-iron-list/34634962#34634962
+                //http://stackoverflow.com/questions/30565058/polymer-1-0-iron-ajax
+            },
+            _scrapLink: function(){
+                this.$.ajax.body = { "url": this.url};
+                this.$.ajax.generateRequest();
+                this._toggleOverlay();
+            },
+            _handleResponse:function(e){
+                console.log(e.detail.response);
+                this.push('scrapers',{
+                    url: this.url,
+                    title: e.detail.response.title,
+                    img_url: e.detail.response.image,
+                    description: e.detail.response.description
+                })
+                this.url = '';
+                this._toggleOverlay();
+            },
+            _handleErrorResponse:function(e){
+                console.log(e.detail.error);
+            },
+            _valiteInputValue:function(input){
+                var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+                var regex = new RegExp(expression);
+                if (input.match(regex)){
+                    this.$$('.scraper-btn').disabled = false;
+                    this.$.input.invalid = false;
+                }else{
+                    this.$.input.invalid = true;
+                    this.$$('.scraper-btn').disabled = true;
+                }
+            },
+            _deleteScraperLink:function(e){
+                var index = this.scrapers.indexOf(e.model.item);
+                this.splice('scrapers',index,1);
+            },
+            _toggleOverlay:function(){
+              this.isLoading = !this.isLoading;
+            }
+        })
+    </script>
+</dom-module>
