@@ -4,6 +4,7 @@
 <link rel="import" href="../../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <dom-module id="scraper-el">
    <template>
         <style is="custom-style">
@@ -124,6 +125,10 @@
                    justify-content: center;
            background: #fff;
        }
+       #errorMsg {
+         --paper-toast-background-color: red;
+         --paper-toast-color: white;
+       }
        </style>
             <iron-ajax id="ajax"
                        method="POST"
@@ -151,7 +156,7 @@
                 <div class="list-item">
                     <div class="scraper-card">
                         <iron-image id="thumbnail"
-                                alt="{{item.title}}"
+                                alt="no image available"
                                 src="{{item.img_url}}"
                                 ></iron-image>
                         <div class="scraper-card-title">
@@ -167,7 +172,7 @@
                 </div>
                 </template>
             </div>
-
+            <paper-toast id="errorMsg" class="fit-bottom" text="Error connection timed out!"></paper-toast>
             <!-- loading -->
             <div class="overlay" hidden$="[[!isLoading]]">
                 <paper-spinner active="[[isLoading]]"></paper-spinner>
@@ -201,8 +206,6 @@
             },
             ready:function(){
                 console.log("ready");
-                //http://stackoverflow.com/questions/34627793/polymer-1-x-deleting-an-item-from-iron-list/34634962#34634962
-                //http://stackoverflow.com/questions/30565058/polymer-1-0-iron-ajax
             },
             _scrapLink: function(){
                 this.$.ajax.body = { "url": this.url};
@@ -222,6 +225,11 @@
             },
             _handleErrorResponse:function(e){
                 console.log(e.detail.error);
+                if(e.detail.error){
+                  this._toggleOverlay();
+                  this.$.errorMsg.open();
+                }
+
             },
             _valiteInputValue:function(input){
                 var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
